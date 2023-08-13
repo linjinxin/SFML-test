@@ -1,7 +1,14 @@
 #include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 
-int main()
+#ifdef _DEBUG
+#pragma comment(lib, "sfml-graphics-d.lib")
+#else
+#pragma comment(lib, "sfml-graphics.lib")
+#endif // DEBUG
+
+int main_w()
 {
 	sf::Window window;
 	sf::ContextSettings settings;
@@ -16,7 +23,20 @@ int main()
 				  << mode.bitsPerPixel << " bpp" << std::endl;
 	}
 
-	sf::Window window2(modes[0], "Window2", sf::Style::Fullscreen);
+	sf::Window window2(*modes.rbegin(), "Window2", sf::Style::Titlebar | sf::Style::Close);
+
+	sf::Image image;
+	if (image.loadFromFile("../Res/title.png"))
+	{
+		auto size = image.getSize();
+		window.setIcon(size.x, size.y, image.getPixelsPtr());
+	}
+	window.setTitle("SFML Window");
+	window.setPosition(sf::Vector2i(100, 100));
+	window.setSize(sf::Vector2u(960, 640));
+
+	window.display();
+	window2.display();
 
 	while (window.isOpen() || window2.isOpen())
 	{
